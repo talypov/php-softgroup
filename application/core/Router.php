@@ -31,11 +31,18 @@ class Router {
 
   public function run() {
     if ($this->match()) {
-     $controller = 'application\controllers\\'.ucfirst($this->params['controller']).'Controller.php';
-      if(class_exist($controller)){
-        //
+     $path = 'application\controllers\\'.ucfirst($this->params['controller']).'Controller';
+      if(class_exists($path)){
+       $action = $this->params['action'].'Action';
+       if (method_exists($path, $action)){
+         $controller = new $path($this->params);
+         $controller->$action();
+       } else {
+        echo 'dont find action'.$action;
+       }
+       //echo $path;
       } else {
-        echo 'not found: '.$controller;
+        echo 'not found: '.$path;
       }
     } else {
       echo 'router dont find';
